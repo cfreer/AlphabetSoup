@@ -1,3 +1,26 @@
 .row {
   display: flex;
+  justify-content: center;
+}
+
+.box {
+  border-left: solid;
+  border-top: solid;
+}
+
+p {
+  margin: 0;
+  padding: 10px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.last-col {
+  border-right: solid;
+}
+
+.last-row {
+  border-bottom: solid;
 }

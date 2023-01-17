@@ -1,0 +1,3 @@
+CREATE TABLE words (
+  word VARCHAR(4) PRIMARY KEY
+);

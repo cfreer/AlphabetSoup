@@ -1,8 +1,15 @@
 import React from 'react';
-import Keyboard from './Keyboard';
+import Grid from './Grid';
 
 function App() {
-  return <Keyboard/>;
+  return (
+    <div>
+      <h1>
+        Alphabet Soup
+      </h1>
+      <Grid />
+    </div>
+  );
 }
 
 export default App;

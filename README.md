@@ -68,3 +68,10 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# How to Set Up Data
+1. `sqlite3 words.db`
+2. `.read create-table.sql`
+3. `.mode csv`
+4. `.import words.csv words`
+5. `.exit`
