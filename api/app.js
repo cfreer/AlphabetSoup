@@ -12,10 +12,15 @@ app.use(multer().none());
 app.get("/words", async function(req, res) {
   try {
     let db = await getDBConnection();
-    console.log(1);
-    let qry = "SELECT * FROM words ORDER By RANDOM() LIMIT 4";
+    let qry = "SELECT word FROM words ORDER By RANDOM() LIMIT 4";
     let rows = await db.all(qry);
-    res.type("json").send(rows);
+    let words = [];
+    for (let i in rows) {
+      let row = rows[i];
+      let word = row['word'];
+      words.push(word);
+    }
+    res.type("json").send(words);
   } catch (error) {
     console.log(error);
     res.type("text");
