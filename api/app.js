@@ -1,13 +1,23 @@
 "use strict";
-const express = require("express");
-const sqlite = require("sqlite");
-const sqlite3 = require("sqlite3");
+const express = require('express');
+const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3');
 const app = express();
-const multer = require("multer");
+const multer = require('multer');
+const cors = require('cors');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(multer().none());
+app.use(cors());
+app.use('/api', createProxyMiddleware({
+    target: 'http://localhost:8080/', // Original URL.
+    changeOrigin: true,
+    onProxyRes: function (proxyRes, req, res) {
+       proxyRes.headers['Access-Control-Allow-Origin'] = '*';
+    }
+}));
 
 app.get("/words", async function(req, res) {
   try {

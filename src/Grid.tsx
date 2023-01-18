@@ -1,32 +1,33 @@
-import React from 'react';
 import './styles.css';
 
-export default function Keyboard() {
+export default function Grid(props: any) {
+  const words = props.data;
+  console.log(words);
   return (
     <div>
-      <div class='row'>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box last-col'>A</p>
+      <div className='row'>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box last-col'>A</p>
       </div>
-      <div class='row'>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box last-col'>A</p>
+      <div className='row'>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box last-col'>A</p>
       </div>
-      <div class='row'>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box'>A</p>
-        <p class='box last-col'>A</p>
+      <div className='row'>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box'>A</p>
+        <p className='box last-col'>A</p>
       </div>
-      <div class='row'>
-        <p class='box last-row'>A</p>
-        <p class='box last-row'>A</p>
-        <p class='box last-row'>A</p>
-        <p class='box last-col last-row'>A</p>
+      <div className='row'>
+        <p className='box last-row'>A</p>
+        <p className='box last-row'>A</p>
+        <p className='box last-row'>A</p>
+        <p className='box last-col last-row'>A</p>
       </div>
     </div>
   )
