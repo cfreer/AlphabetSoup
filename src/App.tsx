@@ -10,6 +10,7 @@ async function statusCheck(res : Response) {
 
 function App() {
   const [words, setWords] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const apiUrl = 'https://alphabetsoupapi.onrender.com/words';
 
   useEffect(() => {
@@ -17,8 +18,8 @@ function App() {
       fetch(apiUrl)
       .then(statusCheck)
       .then(res => res.json())
-      .then(res => setWords(res.data))
-      .then(console.log)
+      .then(res => setWords(res))
+      .then(() => setLoaded(true))
       .catch(console.error);
     }
     getWords();
@@ -29,7 +30,7 @@ function App() {
       <h1>
         Alphabet Soup
       </h1>
-      <Grid data={words}/>
+      <Grid words={words} loaded={loaded}/>
     </div>
   );
 }
