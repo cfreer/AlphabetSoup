@@ -8,6 +8,9 @@ async function statusCheck(res : Response) {
   return res;
 }
 
+const LAST_API_CALL_KEY = "lastApiCall";
+const WORDS_KEY = "words";
+
 function App() {
   const [words, setWords] = useState<string[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -18,11 +21,26 @@ function App() {
       fetch(apiUrl)
       .then(statusCheck)
       .then(res => res.json())
-      .then(res => setWords(res))
+      .then(res => {
+        setWords(res);
+        localStorage.setItem(WORDS_KEY, JSON.stringify(res));
+      })
       .then(() => setLoaded(true))
       .catch(console.error);
     }
-    getWords();
+    const lastApiCall = localStorage.getItem(LAST_API_CALL_KEY) as string;
+    const lastApiCallDate = Date.parse(lastApiCall);
+    const today = new Date().toLocaleDateString();
+    const todayDate = Date.parse(today);
+    // Only call API once a day.
+    if (lastApiCall === null || lastApiCallDate < todayDate) {
+      getWords();
+      localStorage.setItem(LAST_API_CALL_KEY, today);
+    } else {
+      const storedWords = JSON.parse(localStorage.getItem(WORDS_KEY) as string);
+      setWords(storedWords);
+      setLoaded(true);
+    }
   }, []);
 
   return (
