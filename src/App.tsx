@@ -29,17 +29,19 @@ function App() {
   const apiUrl = 'https://alphabetsoupapi.onrender.com/words';
 
   function storeWords(words: string[]) {
-    setWords(words);
-    localStorage.setItem(WORDS_KEY, JSON.stringify(words));
-    const storedShuffledWords = JSON.parse(localStorage.getItem(SHUFFLED_WORDS_KEY) as string);
-    if (storedShuffledWords === null) {
-      const shuffledWords = shuffleWords(words);
-      setShuffledWords(shuffledWords);
-      localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
-    } else {
-      setShuffledWords(storedShuffledWords);
+    if (words !== null) {
+      setWords(words);
+      localStorage.setItem(WORDS_KEY, JSON.stringify(words));
+      const storedShuffledWords = JSON.parse(localStorage.getItem(SHUFFLED_WORDS_KEY) as string);
+      if (storedShuffledWords === null) {
+        const shuffledWords = shuffleWords(words);
+        setShuffledWords(shuffledWords);
+        localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
+      } else {
+        setShuffledWords(storedShuffledWords);
+      }
+      setLoaded(true);
     }
-    setLoaded(true);
   }
 
   useEffect(() => {
