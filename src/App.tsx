@@ -27,6 +27,7 @@ function App() {
   const [shuffledWords, setShuffledWords] = useState<string[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const apiUrl = 'https://alphabetsoupapi.onrender.com/words';
+  const today = new Date().toLocaleDateString();
 
   function storeWords(words: string[]) {
     if (words !== null) {
@@ -41,6 +42,7 @@ function App() {
         setShuffledWords(storedShuffledWords);
       }
       setLoaded(true);
+      localStorage.setItem(LAST_API_CALL_KEY, today);
     }
   }
 
@@ -54,12 +56,11 @@ function App() {
     }
     const lastApiCall = localStorage.getItem(LAST_API_CALL_KEY) as string;
     const lastApiCallDate = Date.parse(lastApiCall);
-    const today = new Date().toLocaleDateString();
     const todayDate = Date.parse(today);
     // Only call API once a day.
     if (lastApiCall === null || lastApiCallDate < todayDate) {
+      localStorage.clear();
       getWords();
-      localStorage.setItem(LAST_API_CALL_KEY, today);
     } else {
       const storedWords = JSON.parse(localStorage.getItem(WORDS_KEY) as string);
       storeWords(storedWords);
