@@ -1,7 +1,7 @@
 import Grid from './Grid';
 import { useEffect, useState } from 'react';
 
-async function statusCheck(res : Response) {
+async function statusCheck(res: Response) {
   if (!res.ok) {
     throw new Error(await res.json());
   }
@@ -11,7 +11,7 @@ async function statusCheck(res : Response) {
 function shuffleWords(words: string[]) {
   let shuffledWords = [] as string[];
   const wordsStr = words.join('');
-  const shuffledWordsStr = wordsStr.split('').sort(()=>Math.random()-.5).join('');
+  const shuffledWordsStr = wordsStr.split('').sort(() => Math.random() - .5).join('');
   for (let i = 0; i < 16; i += 4) {
     shuffledWords.push(shuffledWordsStr.substring(i, i + 4));
   }
@@ -27,33 +27,35 @@ function App() {
   const [shuffledWords, setShuffledWords] = useState<string[]>([]);
   const [loaded, setLoaded] = useState<boolean>(false);
   const apiUrl = 'https://alphabetsoupapi.onrender.com/words';
-  const today = new Date().toLocaleDateString();
-
-  function storeWords(words: string[]) {
-    if (words !== null) {
-      setWords(words);
-      localStorage.setItem(WORDS_KEY, JSON.stringify(words));
-      const storedShuffledWords = JSON.parse(localStorage.getItem(SHUFFLED_WORDS_KEY) as string);
-      if (storedShuffledWords === null) {
-        const shuffledWords = shuffleWords(words);
-        setShuffledWords(shuffledWords);
-        localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
-      } else {
-        setShuffledWords(storedShuffledWords);
-      }
-      setLoaded(true);
-      localStorage.setItem(LAST_API_CALL_KEY, today);
-    }
-  }
 
   useEffect(() => {
+    const today = new Date().toLocaleDateString();
+
     function getWords() {
       fetch(apiUrl)
-      .then(statusCheck)
-      .then(res => res.json())
-      .then(res => storeWords(res))
-      .catch(console.error);
+        .then(statusCheck)
+        .then(res => res.json())
+        .then(res => storeWords(res))
+        .catch(console.error);
     }
+
+    function storeWords(words: string[]) {
+      if (words !== null) {
+        setWords(words);
+        localStorage.setItem(WORDS_KEY, JSON.stringify(words));
+        const storedShuffledWords = JSON.parse(localStorage.getItem(SHUFFLED_WORDS_KEY) as string);
+        if (storedShuffledWords === null) {
+          const shuffledWords = shuffleWords(words);
+          setShuffledWords(shuffledWords);
+          localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
+        } else {
+          setShuffledWords(storedShuffledWords);
+        }
+        setLoaded(true);
+        localStorage.setItem(LAST_API_CALL_KEY, today);
+      }
+    }
+
     const lastApiCall = localStorage.getItem(LAST_API_CALL_KEY) as string;
     const lastApiCallDate = Date.parse(lastApiCall);
     const todayDate = Date.parse(today);
@@ -72,7 +74,7 @@ function App() {
       <h1>
         Alphabet Soup
       </h1>
-      <Grid words={words} loaded={loaded} shuffledWords={shuffledWords}/>
+      <Grid words={words} loaded={loaded} shuffledWords={shuffledWords} />
     </div>
   );
 }
