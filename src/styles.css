@@ -42,6 +42,14 @@ h1 {
   align-items: center;
 }
 
+.clicked {
+  background-color: gray;
+}
+
+.neighbor {
+  background-color: lightgray;
+}
+
 #loading {
   text-align: center;
 }
