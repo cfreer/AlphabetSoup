@@ -1,4 +1,7 @@
 import './styles.css';
+let words: string[] = [];
+let shuffledWords: string[][] = [];
+let colors: string[][] = [...Array(4)].map(e => Array(4));
 
 function id(idName: string) {
   return document.getElementById(idName);
@@ -6,6 +9,29 @@ function id(idName: string) {
 
 function toggleNeighbor(idNum: number) {
   id(idNum.toString())?.classList.toggle("neighbor");
+}
+
+function getLocation(id: number) {
+  const r = Math.floor((id - 1) / 4);
+  const c = Math.floor((id - 1) % 4);
+  return [r, c];
+}
+
+function getId(r: number, c: number) {
+  return (4 * r) + c + 1;
+}
+
+function swap(element: HTMLParagraphElement, neighbor: HTMLParagraphElement) {
+  const temp = element.textContent;
+  element.textContent = neighbor.textContent;
+  neighbor.textContent = temp;
+  const [r1, c1] = getLocation(parseInt(element.id));
+  const [r2, c2] = getLocation(parseInt(neighbor.id));
+  const save = shuffledWords[r1][c1];
+  shuffledWords[r1][c1] = shuffledWords[r2][c2];
+  shuffledWords[r2][c2] = save;
+  setColors();
+  clearClicked();
 }
 
 function clearClicked() {
@@ -16,53 +42,97 @@ function clearClicked() {
   })
 }
 
-function getColors(words: string[], shuffledWords: string[]) {
-  const size = words.length;
-  let colors: string[][] = [...Array(4)].map(e => Array(4));;
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
-      const letter = words[r][c];
-      const shuffledLetter = shuffledWords[r][c];
-      if (letter === shuffledLetter) {
-        colors[r][c] = 'green';
-      } else if (words[r].includes(shuffledLetter)) {
-        colors[r][c] = 'yellow';
-      } else {
-        colors[r][c] = 'white';
+function clearColors() {
+  for (let i = 1; i <= 16; i++) {
+    id(i.toString())?.classList.remove("green", "yellow", "white");
+  }
+}
+
+function setColor(r: number, c: number) {
+  const letter = words[r][c];
+  const shuffledLetter = shuffledWords[r][c];
+  if (letter === shuffledLetter) {
+    colors[r][c] = 'green';
+  } else if (words[r].includes(shuffledLetter)) {
+    colors[r][c] = 'yellow';
+  } else {
+    colors[r][c] = 'white';
+  }
+  const shuffledLetCount = shuffledWords[r].filter(x => x === shuffledLetter).length;
+  const realLetCount = words[r].split(shuffledLetter).length - 1;
+  // Have the right number of yellow boxes.
+  if (shuffledLetCount > realLetCount) {
+    let count = 0;
+    for (let i = 0; i < 4; i++) {
+      const color = colors[r][i];
+      const character = shuffledWords[r][i];
+      if (character === shuffledLetter && color !== 'white') {
+        count++;
       }
     }
+    let i = 0;
+    while (count > realLetCount) {
+      const color = colors[r][i];
+      if (color === 'yellow') {
+        colors[r][i] = 'white';
+        let classes = id(getId(r, i).toString())?.classList;
+        classes?.remove('yellow');
+        classes?.add(colors[r][i]);
+        count--;
+      }
+      i++;
+    }
   }
-  return colors;
+  id(getId(r, c).toString())?.classList.add(colors[r][c]);
+}
+
+function setColors() {
+    clearColors();
+    const size = words.length;
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        setColor(r, c);
+      }
+    }
 }
 
 function handleClick(event: React.MouseEvent<HTMLParagraphElement>) {
-  clearClicked();
   const element = event.currentTarget;
-  const elId = parseInt(element.id);
-  element.classList.toggle("clicked");
-  const above = elId - 4;
-  const below = elId + 4;
-  const left = elId - 1;
-  const right = elId + 1;
-  if (above >= 1) {
-    toggleNeighbor(above);
-  }
-  if (below <= 26) {
-    toggleNeighbor(below);
-  }
-  if (left % 4 !== 0) {
-    toggleNeighbor(left);
-  }
-  if (elId % 4 !== 0) {
-    toggleNeighbor(right);
+  const isNeighbor = element.classList.contains("neighbor");
+  if (isNeighbor) {
+    const prevElement = document.querySelector(".clicked") as HTMLParagraphElement;
+    swap(prevElement, element);
+  } else {
+    clearClicked();
+    const elId = parseInt(element.id);
+    element.classList.toggle("clicked");
+    const above = elId - 4;
+    const below = elId + 4;
+    const left = elId - 1;
+    const right = elId + 1;
+    if (above >= 1) {
+      toggleNeighbor(above);
+    }
+    if (below <= 26) {
+      toggleNeighbor(below);
+    }
+    if (left % 4 !== 0) {
+      toggleNeighbor(left);
+    }
+    if (elId % 4 !== 0) {
+      toggleNeighbor(right);
+    }
   }
 }
 
 export default function Grid(props: any) {
-  const words = props.words;
+  words = props.words;
   const loaded = props.loaded;
-  const shuffledWords = props.shuffledWords;
-  const colors = getColors(words, shuffledWords);
+  shuffledWords = props.shuffledWords;
+  for (let r = 0; r < shuffledWords.length; r++) {
+    shuffledWords[r] = [...shuffledWords[r]];
+  }
+  setColors();
 
   return (
     loaded ?

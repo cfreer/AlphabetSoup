@@ -29,14 +29,25 @@ function App() {
   const apiUrl = 'https://alphabetsoupapi.onrender.com/words';
 
   useEffect(() => {
-    const today = new Date().toLocaleDateString();
-
     function getWords() {
       fetch(apiUrl)
         .then(statusCheck)
         .then(res => res.json())
         .then(res => storeWords(res))
         .catch(console.error);
+    }
+
+    const today = new Date().toLocaleDateString();
+    const lastApiCall = localStorage.getItem(LAST_API_CALL_KEY) as string;
+    const lastApiCallDate = Date.parse(lastApiCall);
+    const todayDate = Date.parse(today);
+    // Only call API once a day.
+    if (lastApiCall === null || lastApiCallDate < todayDate) {
+      localStorage.clear();
+      getWords();
+    } else {
+      const storedWords = JSON.parse(localStorage.getItem(WORDS_KEY) as string);
+      storeWords(storedWords);
     }
 
     function storeWords(words: string[]) {
@@ -56,17 +67,6 @@ function App() {
       }
     }
 
-    const lastApiCall = localStorage.getItem(LAST_API_CALL_KEY) as string;
-    const lastApiCallDate = Date.parse(lastApiCall);
-    const todayDate = Date.parse(today);
-    // Only call API once a day.
-    if (lastApiCall === null || lastApiCallDate < todayDate) {
-      localStorage.clear();
-      getWords();
-    } else {
-      const storedWords = JSON.parse(localStorage.getItem(WORDS_KEY) as string);
-      storeWords(storedWords);
-    }
   }, []);
 
   return (
