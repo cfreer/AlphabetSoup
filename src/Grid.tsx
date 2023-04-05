@@ -2,6 +2,7 @@ import './styles.css';
 let words: string[] = [];
 let shuffledWords: string[][] = [];
 let colors: string[][] = [...Array(4)].map(e => Array(4));
+const SHUFFLED_WORDS_KEY = "shuffledWords";
 
 function id(idName: string) {
   return document.getElementById(idName);
@@ -73,7 +74,10 @@ function setColor(r: number, c: number) {
     let i = 0;
     while (count > realLetCount) {
       const color = colors[r][i];
-      if (color === 'yellow') {
+      if (!color) {
+        break;
+      }
+      if (color === 'yellow' && shuffledWords[r][i] === shuffledLetter) {
         colors[r][i] = 'white';
         let classes = id(getId(r, i).toString())?.classList;
         classes?.remove('yellow');
@@ -88,11 +92,15 @@ function setColor(r: number, c: number) {
 
 function setColors() {
     clearColors();
-    const size = words.length;
+    const size = shuffledWords.length;
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
         setColor(r, c);
       }
+    }
+    const isFilled = shuffledWords.some( function (a) { return a.length });
+    if (isFilled) {
+      localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
     }
 }
 
