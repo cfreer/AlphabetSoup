@@ -106,8 +106,11 @@ function setColors() {
 
 function handleClick(event: React.MouseEvent<HTMLParagraphElement>) {
   const element = event.currentTarget;
+  const isClicked = element.classList.contains("clicked");
   const isNeighbor = element.classList.contains("neighbor");
-  if (isNeighbor) {
+  if (isClicked) {
+    clearClicked();
+  } else if (isNeighbor) {
     const prevElement = document.querySelector(".clicked") as HTMLParagraphElement;
     swap(prevElement, element);
   } else {

@@ -1,5 +1,6 @@
 p {
   margin: 0;
+  font-size: x-large;
   padding: 10px;
 }
 
@@ -35,8 +36,8 @@ h1 {
 .box {
   border-left: solid;
   border-top: solid;
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
