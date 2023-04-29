@@ -23,6 +23,10 @@ function getId(r: number, c: number) {
 }
 
 function swap(element: HTMLParagraphElement, neighbor: HTMLParagraphElement) {
+  // Increase moves by 1.
+  const movesEl = id('numMoves') as HTMLParagraphElement;
+  const movesNum = movesEl.textContent as string;
+  movesEl.textContent = (parseInt(movesNum) + 1).toString();
   const temp = element.textContent;
   element.textContent = neighbor.textContent;
   neighbor.textContent = temp;
@@ -91,17 +95,17 @@ function setColor(r: number, c: number) {
 }
 
 function setColors() {
-    clearColors();
-    const size = shuffledWords.length;
-    for (let r = 0; r < size; r++) {
-      for (let c = 0; c < size; c++) {
-        setColor(r, c);
-      }
+  clearColors();
+  const size = shuffledWords.length;
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      setColor(r, c);
     }
-    const isFilled = shuffledWords.some( function (a) { return a.length });
-    if (isFilled) {
-      localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
-    }
+  }
+  const isFilled = shuffledWords.some(function (a) { return a.length });
+  if (isFilled) {
+    localStorage.setItem(SHUFFLED_WORDS_KEY, JSON.stringify(shuffledWords));
+  }
 }
 
 function handleClick(event: React.MouseEvent<HTMLParagraphElement>) {
@@ -171,6 +175,10 @@ export default function Grid(props: any) {
           <p className={'box last-row ' + colors[3][1]} onClick={handleClick} id="14">{shuffledWords[3][1]}</p>
           <p className={'box last-row ' + colors[3][2]} onClick={handleClick} id="15">{shuffledWords[3][2]}</p>
           <p className={'box last-col last-row ' + colors[3][3]} onClick={handleClick} id="16">{shuffledWords[3][3]}</p>
+        </div>
+        <div className='moves'>
+          <p>Moves:</p>
+          <p id='numMoves'>0</p>
         </div>
       </div>
       :
